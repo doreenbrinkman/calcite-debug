@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@esri/calcite-components-react": "^2.8.3",
+    "@esri/calcite-components": "3.0.0-next.35",
+    "@esri/calcite-components-react": "3.0.0-next.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -17,8 +18,8 @@
     "@types/react": "^18.2.70",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.2.11",
-    "vite-plugin-static-copy": "^0.17.0"
+    "vite-plugin-static-copy": "^0.17.0",
+    "vite": "^5.2.6"
   },
   "author": "",
   "license": "UNLICENSED"
