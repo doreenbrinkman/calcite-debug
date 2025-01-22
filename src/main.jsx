@@ -41,7 +41,9 @@ function TestComponent() {
         <calcite-table-row>
           <calcite-table-header heading="Heading 1"></calcite-table-header>
         </calcite-table-row>
-        {/* Try with just 3 rows and then all rows */}
+        {/* Try with just 3 rows and then uncomment all rows.
+            Make sure `Last incompatible field` is visible at end of popover.
+            */}
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
@@ -56,7 +58,7 @@ function TestComponent() {
         <TableRow  onFieldSelect={setFieldSelectRef} /> */}
       </calcite-table>
       { /* No difference if outside of table, more complicated to change in MapFieldsModal */}
-      {fieldSelectRef &&
+      {/* {fieldSelectRef &&
       createPortal(
         <calcite-popover
         referenceElement={fieldSelectRef}
@@ -146,7 +148,7 @@ function TestComponent() {
         </div>
       </calcite-popover>,
         fieldSelectRef.parentElement,
-      )}
+      )} */}
     </div>
   </div>
   );
@@ -168,7 +170,103 @@ function TableRow({ onFieldSelect }) {
           >
           </calcite-list-item>
         </calcite-list>
+        {/* Current code which used to work */}
+        {/* When there is only a few rows scrolling is strange
+            calcite-table  internally sets div.table-container overflow: auto 
+            If I turn this off manually in the container, popover 
+            displays correctly in all cases */}
+        {fieldSelectRef &&
+            <calcite-popover
+            referenceElement={fieldSelectRef}
+            oncalcitePopoverClose={() => setFieldSelectRef(null)}
+            flipDisabled // required for design not to flip
+            // Setting this fixes small number of rows, but breaks large number of rows
+            // overlayPositioning="fixed"
+            placement="bottom"
+            label="my label"
+            offsetDistance={1}
+            //className="map-fields__popover"
+            open
+            pointerDisabled
+            triggerDisabled
+            autoClose
+          >
+            <div
+              style={{
+                overflow: "auto",
+                //width: `${fieldSelectRef.getBoundingClientRect().width}px`,
+                width: "350px",
+                maxHeight: "350px",
+              }}
+            >
+              <calcite-list
+                label="field list"
+                selectionMode="single"
+                selectionAppearance="border"
+                filterEnabled
+                filterPlaceholder="Type in here"
+                // https://github.com/Esri/calcite-design-system/issues/7545
+                style={{ overflow: "auto" }}
+              >
+                <calcite-list-item-group
+                  heading="Compatible fields"
+                >
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Last compatible field" ></calcite-list-item>
+                </calcite-list-item-group>
+                <calcite-list-item-group
+                  heading="Incompatible fields"
+                  disabled={true}
+                >
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Description 1" ></calcite-list-item>
+                  <calcite-list-item
+                  label="one" 
+                  description="Last incompatible field" ></calcite-list-item>
+                </calcite-list-item-group>
+              </calcite-list>
+            </div>
+          </calcite-popover>}
       </calcite-table-cell>
+      { /* Tried to move popover outside of table cell, but still problems */}
       {/* {fieldSelectRef &&
           createPortal(
             <calcite-popover
