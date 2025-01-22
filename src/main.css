@@ -1,0 +1,28 @@
+.map-fields__content-main {
+  position: relative;
+  min-height: 0px;
+  flex: 1 1 0%;
+  overflow-y: auto;
+  padding: 0px var(--pipelines-full-spacing) var(--pipelines-full-spacing)
+    var(--pipelines-full-spacing);
+  width: calc(100% - 2 * var(--pipelines-full-spacing));
+}
+
+.map-fields__content {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--calcite-color-background);
+}
+
+.map-fields-modal {
+  /* Temporary workaround: https://devtopia.esri.com/WebGIS/arcgis-app-components/issues/6064 */
+  --calcite-dialog-size-x: 769px;
+  --calcite-dialog-size-y: 80%;
+}
+
+.map-fields__popover {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
