@@ -21,9 +21,7 @@ import "./main.css";
 setAssetPath(location.href);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <calcite-dialog modal heading="Map fields" open className="map-fields-modal">
       <TestComponent />
-    </calcite-dialog>
   </React.StrictMode>
 );
 
@@ -32,9 +30,13 @@ function TestComponent() {
   // when popover is opened it overflows.  Even if the table has a large fixed height,
   // the table still internally scrolls.
   // If I add more TableRows, the overflow is not added and scrolling is ok
-  // Alternative, render using createPortal outside of the table
+  // Alternative, render using createPortal outside of the table using document.body
+  // This works, until I place it in a calcite-dialog
   const [fieldSelectRef, setFieldSelectRef] = useState(null);
   return (
+    // Note, using dialog breaks scrolling, small and long lists work when not in dialog
+    // Comment out dialog to see it working, make sure to refresh page, try with 3 rows and all rows
+  <calcite-dialog modal heading="Map fields" open className="map-fields-modal">
   <div className="map-fields__content">
     <div className="map-fields__content-main">
       <calcite-table>
@@ -47,7 +49,6 @@ function TestComponent() {
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
-        {/* <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
@@ -55,102 +56,12 @@ function TestComponent() {
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
         <TableRow  onFieldSelect={setFieldSelectRef} />
-        <TableRow  onFieldSelect={setFieldSelectRef} /> */}
+        <TableRow  onFieldSelect={setFieldSelectRef} />
+        <TableRow  onFieldSelect={setFieldSelectRef} />
       </calcite-table>
-      { /* No difference if outside of table, more complicated to change in MapFieldsModal */}
-      {/* {fieldSelectRef &&
-      createPortal(
-        <calcite-popover
-        referenceElement={fieldSelectRef}
-        oncalcitePopoverClose={() => setFieldSelectRef(null)}
-        flipDisabled
-        placement="bottom"
-        label="my label"
-        offsetDistance={1}
-        className="map-fields__popover"
-        open
-        pointerDisabled
-        triggerDisabled
-        autoClose
-      >
-        <div
-          style={{
-            overflow: "auto",
-            //width: `${fieldSelectRef.getBoundingClientRect().width}px`,
-            width: "350px",
-            maxHeight: "350px",
-          }}
-        >
-          <calcite-list
-            label="field list"
-            selectionMode="single"
-            selectionAppearance="border"
-            filterEnabled
-            filterPlaceholder="Type in here"
-            // https://github.com/Esri/calcite-design-system/issues/7545
-            style={{ overflow: "auto" }}
-          >
-            <calcite-list-item-group
-              heading="Compatible fields"
-            >
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Last compatible field" ></calcite-list-item>
-            </calcite-list-item-group>
-            <calcite-list-item-group
-              heading="Incompatible fields"
-              disabled={true}
-            >
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Description 1" ></calcite-list-item>
-              <calcite-list-item
-              label="one" 
-              description="Last incompatible field" ></calcite-list-item>
-            </calcite-list-item-group>
-          </calcite-list>
-        </div>
-      </calcite-popover>,
-        fieldSelectRef.parentElement,
-      )} */}
     </div>
   </div>
+  </calcite-dialog> 
   );
 }
 
@@ -170,17 +81,13 @@ function TableRow({ onFieldSelect }) {
           >
           </calcite-list-item>
         </calcite-list>
-        {/* Current code which used to work */}
-        {/* When there is only a few rows scrolling is strange
-            calcite-table  internally sets div.table-container overflow: auto 
-            If I turn this off manually in the container, popover 
-            displays correctly in all cases */}
         {fieldSelectRef &&
+          createPortal(
             <calcite-popover
             referenceElement={fieldSelectRef}
             oncalcitePopoverClose={() => setFieldSelectRef(null)}
-            flipDisabled // required for design not to flip
-            // Setting this fixes small number of rows, but breaks large number of rows
+            flipDisabled
+            // fixes small number of rows, breaks large number of rows
             // overlayPositioning="fixed"
             placement="bottom"
             label="my label"
@@ -206,98 +113,7 @@ function TableRow({ onFieldSelect }) {
                 filterEnabled
                 filterPlaceholder="Type in here"
                 // https://github.com/Esri/calcite-design-system/issues/7545
-                style={{ overflow: "auto" }}
-              >
-                <calcite-list-item-group
-                  heading="Compatible fields"
-                >
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Last compatible field" ></calcite-list-item>
-                </calcite-list-item-group>
-                <calcite-list-item-group
-                  heading="Incompatible fields"
-                  disabled={true}
-                >
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Description 1" ></calcite-list-item>
-                  <calcite-list-item
-                  label="one" 
-                  description="Last incompatible field" ></calcite-list-item>
-                </calcite-list-item-group>
-              </calcite-list>
-            </div>
-          </calcite-popover>}
-      </calcite-table-cell>
-      { /* Tried to move popover outside of table cell, but still problems */}
-      {/* {fieldSelectRef &&
-          createPortal(
-            <calcite-popover
-            referenceElement={fieldSelectRef}
-            oncalcitePopoverClose={() => setFieldSelectRef(null)}
-            flipDisabled
-            placement="bottom"
-            label="my label"
-            offsetDistance={1}
-            //className="map-fields__popover"
-            open
-            pointerDisabled
-            triggerDisabled
-            autoClose
-          >
-            <div
-              style={{
-                overflow: "auto",
-                //width: `${fieldSelectRef.getBoundingClientRect().width}px`,
-                width: "350px",
-                maxHeight: "350px",
-              }}
-            >
-              <calcite-list
-                label="field list"
-                selectionMode="single"
-                selectionAppearance="border"
-                filterEnabled
-                filterPlaceholder="Type in here"
-                // https://github.com/Esri/calcite-design-system/issues/7545
-                style={{ overflow: "auto" }}
+                // style={{ overflow: "auto" }}
               >
                 <calcite-list-item-group
                   heading="Compatible fields"
@@ -356,10 +172,11 @@ function TableRow({ onFieldSelect }) {
               </calcite-list>
             </div>
           </calcite-popover>,
-            fieldSelectRef.parentElement,
+            // fieldSelectRef.parentElement,
             // Using document.body, looks good when not in dialog for small number and all rows
-            // document.body,
-          )} */}
+            document.body,
+          )}
+      </calcite-table-cell>
     </calcite-table-row>
   );
 }
